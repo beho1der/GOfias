@@ -10,18 +10,25 @@ import (
 	"os"
 )
 
-type Doctype struct {
-	NDTYPEID int    `xml:"NDTYPEID,attr"`
-	NAME     string `xml:"NAME,attr"`
+type Adress struct {
+	AOGUID     string `xml:"AOGUID,attr"`
+	FORMALNAME string `xml:"FORMALNAME,attr"`
+	OFFNAME    string `xml:"FOFFNAME,attr"`
+	SHORTNAME  string `xml:"SHORTNAME,attr"`
+	PARENTGUID string `xml:"PARENTGUID,attr"`
+	CURRSTATUS int    `xml:"CURRSTATUS,attr"`
+	LIVESTATUS int    `xml:"LIVESTATUS,attr"`
+	REGIONCODE string `xml:"REGIONCODE,attr"`
+	AOLEVEL    int    `xml:"AOLEVEL,attr"`
 }
 
 type Data struct {
 	Doctypes []Doctype `xml:"NormativeDocumentType"`
 }
 
-type Cast struct {
-	Ndtype    int    `bson:"ndtype"`
-	Normative string `bson:"normative"`
+type Mongo_Region struct {
+	Region string `bson:"region"`
+	Code   string `bson:"regioncode"`
 }
 
 func main() {
@@ -34,7 +41,7 @@ func main() {
 	// получаем коллекцию
 	normaCollection := session.DB("fias").C("norma")
 
-	xmlFile, err := os.Open("AS_NDOCTYPE.XML")
+	xmlFile, err := os.Open("/home/captain/Загрузки/fias_xml/AS_ADDROBJ.XML")
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
@@ -56,7 +63,7 @@ func main() {
 			// If we just read a StartElement token
 			inElement = se.Name.Local
 			// ...and its name is "page"
-			if inElement == "NormativeDocumentType" {
+			if inElement == "Object" {
 				var data Doctype
 				// decode a whole chunk of following XML into the
 				// variable p which is a Page (se above)
